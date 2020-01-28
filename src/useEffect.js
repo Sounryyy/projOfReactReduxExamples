@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 // Это комбинация didMount и didUpdate при каждом методе запускается функция
 // Чтобы предотвратить вызов 1го параметра useEffect (вызывать только если поменялся проп) - нужно сделать проверку. 2м аргументом в useEffect вписать этот проп внутри массива.
 // если хотябы одно значение изменится - нужно вызывать данную функцию.
-// Если в качестве 2 аргумента передать 2й массив - то функция вызовется только 1 раз при mount'e компонента
+// Если в качестве 2 аргумента передать пустой массив - то функция вызовется только 1 раз при mount'e компонента
 // Как отчищать useEffect - нужно возвращать из функции стрелочную функцию. Чистит предыдущий эффект и запускает следующий. Вызывается при каждом следующем вызове useEffect
 
 
@@ -23,6 +23,7 @@ const App = () => {
                     onClick={() => setVisible(false)}> Hide </button>
                 <ClassCounter value={value} />
                 <HookCounter value={value} />
+                <Notification />
             </div>
         )
     } else {
@@ -52,6 +53,14 @@ class ClassCounter extends Component {
 }
 
 const HookCounter = ({ value }) => {
+
+    useEffect(() => console.log('mount'), []);
+
+    useEffect(() => console.log('mount + update'));
+
+    useEffect(() => () => console.log('unmount'), []);
+
+
     useEffect(() => {
         console.log('  useEffect()');
 
@@ -59,6 +68,19 @@ const HookCounter = ({ value }) => {
     }, [ value ]);
 
     return <p> {value} </p>
+};
+
+const Notification = () => {
+    const [visible, setVisible] = useState(true);
+
+    useEffect(() => {
+           const timeout = setTimeout(() => setVisible(false), 2500);
+
+           return () => clearTimeout(timeout);
+    }, []);
+
+
+    return visible ? <div><p>Hello</p></div> : null;
 };
 
 ReactDOM.render(<App />, document.getElementById('root'));
