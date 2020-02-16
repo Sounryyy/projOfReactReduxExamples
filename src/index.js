@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-
+// Можно создать свой хук, название кастомного хука должна начинаться с use
 const App = () => {
 
     return (
